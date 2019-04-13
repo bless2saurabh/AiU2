@@ -13,11 +13,10 @@ from nets import inception
 from preprocessing import inception_preprocessing
 from datasets import imagenet
 
-session, names, probabilities, processed_images = None, None, None, None
+session, names, probabilities, processed_images, preds, lime_explanation = None, None, None, None, None, None
 
-
-def load_pretrained_model_from_disk(slim_home_dir):
-    global session, names, probabilities, processed_images
+def load_pretrained_slim_model ():
+    global session, names, probabilities, processed_images, slim_home_dir
     names = imagenet.create_readable_names_for_imagenet_labels()
     processed_images = tf.placeholder(tf.float32, shape=(None, 299, 299, 3))
     with slim.arg_scope(inception.inception_v3_arg_scope()):
@@ -29,9 +28,7 @@ def load_pretrained_model_from_disk(slim_home_dir):
                                              slim.get_model_variables('InceptionV3'))
     init_fn(session)
 
-
-def transform_img_fn(relativePathtoImageFile, imageFilename):
-    imageFilePath = os.path.join(relativePathtoImageFile, imageFilename)
+def transform_image_for_inception(imageFilePath):
     image_size = inception.inception_v3.default_image_size
     out = []
     image_raw = tf.image.decode_png(open(imageFilePath, 'rb').read(), channels=3)
@@ -39,18 +36,39 @@ def transform_img_fn(relativePathtoImageFile, imageFilename):
     out.append(image)
     return session.run([out])[0][0]
 
-
 def predict_fn(images):
     global session, names, probabilities, processed_images
     return session.run(probabilities, feed_dict={processed_images: images})
 
-
-def get_prediction_for(image, top=5):
+def print_top_predictions_for_image(image, top=5):
+    global preds
     preds = predict_fn([image])
-    for x in preds.argsort()[0][-top:]:
+    for x in preds.argsort()[0][:-top-1:-1]:
         print(x, names[x], preds[0, x])
 
-
-def displayImage(image):
+def display_image(image):
     plt.imshow(image / 2 + 0.5)
     plt.show()
+
+## LIME for image classsifier
+from lime import lime_image
+from skimage.segmentation import mark_boundaries
+
+def process_image_by_lime (image):
+    global lime_explanation
+    lime_explanation = lime_image.LimeImageExplainer().explain_instance(
+        image, predict_fn, top_labels=5, hide_color=0, num_samples=1000)
+
+def display_lime_image_exp (top, positive_only, num_features, hide_rest):
+    global preds, lime_explanation
+    temp, mask = lime_explanation.get_image_and_mask(
+        preds.argsort()[0][-top], positive_only=positive_only, num_features=num_features, hide_rest=hide_rest)
+    plt.imshow(mark_boundaries(temp / 2 + 0.5, mask))
+    plt.show()
+
+def show_lime_explanations_for_object (top):
+    display_lime_image_exp(top, positive_only=True, num_features=5, hide_rest=True)
+
+    display_lime_image_exp(top, positive_only=True, num_features=5, hide_rest=False)
+
+    display_lime_image_exp(top, positive_only=False, num_features=10, hide_rest=False)
