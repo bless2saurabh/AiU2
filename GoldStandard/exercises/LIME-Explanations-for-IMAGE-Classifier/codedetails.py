@@ -62,7 +62,7 @@ def process_image_by_lime (image):
 def display_lime_image_exp (top, positive_only, num_features, hide_rest):
     global preds, lime_explanation
     temp, mask = lime_explanation.get_image_and_mask(
-        preds.argsort()[0][-top], positive_only=positive_only, num_features=num_features, hide_rest=hide_rest)
+        preds.argsort()[0][-top], positive_only, num_features=num_features, hide_rest=hide_rest)
     plt.imshow(mark_boundaries(temp / 2 + 0.5, mask))
     plt.show()
 
