@@ -14,22 +14,25 @@ def load_input_data_from_file(input_file_path):
     return dataset
 
 def count_missing_cells(dataset):
-    print ("Column name \t\t #missing_cells")
     return dataset.isnull().sum()
 
-def find_mean(dataset, col_name):
-    return round(dataset[col_name].mean(), 1)
+def find_mean(dataset, col_name, print_value=False):
+    mean = round(dataset[col_name].mean(), 1)
+    if print_value:
+        print('Mean value of ' + col_name + ': ' + str(mean))
+    return mean
 
-def find_mode(dataset, col_name):
-    return dataset[col_name].mode()[0]
+def find_mode(dataset, col_name, print_value=False):
+    mode = dataset[col_name].mode()[0]
+    if print_value:
+        print('Mode value of ' + col_name + ': ' + str(mode))
+    return mode
 
-def fill_missing_cells (dataset, col_name, method):
+def fill_missing_cells (dataset, col_name, method, print_value=False):
     if method == 'mean':
-        cell_value_to_fill = find_mean(dataset, col_name)
-        print ('Mean value of ' + col_name + ': ' + str(cell_value_to_fill))
+        cell_value_to_fill = find_mean(dataset, col_name, print_value=print_value)
     elif method == 'mode':
-        cell_value_to_fill = find_mode(dataset, col_name)
-        print('Mode value of ' + col_name + ': ' + str(cell_value_to_fill))
+        cell_value_to_fill = find_mode(dataset, col_name, print_value=print_value)
     else:
         print("Unknown imputation method")
 
@@ -38,7 +41,9 @@ def fill_missing_cells (dataset, col_name, method):
 def imputate_using_knn(dataset):
     knn_impu = KNNImputer(n_neighbors=3, weights="uniform")
     result = knn_impu.fit_transform(dataset)
+
     result = pd.DataFrame(result)
+
     result.columns = ["CRIM", "ZN", "INDUS", "CHAS", "INDUS", "RM", "AGE", "DIS", "RAD", "TAX", "PT", "B", "LSTAT", "MV"]
     return result
 
