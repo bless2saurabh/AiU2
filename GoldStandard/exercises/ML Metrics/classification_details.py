@@ -30,7 +30,7 @@ def strip_target_column():
         target.append(row[0])
 
 def do_train_test_split(test_size=0.2):
-    # Splitting independent data and targeted data as test and train
+    # Splitting independent data and targeted data as test and dataset
     global X_train, X_test, Y_train, Y_test
     X_train, X_test, Y_train, Y_test = train_test_split(extracted_dataset,
                                                         target, test_size=test_size,
