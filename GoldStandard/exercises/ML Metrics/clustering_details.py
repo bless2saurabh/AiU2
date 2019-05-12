@@ -9,7 +9,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 
 nones = lambda n: [None for _ in range(n)]
 dataset, clustering_cols_data, kmeans, y_kmeans = nones(4)
-
+wcss_scale_down_factor = 100000000
 def load_input_data_from_file(input_file_path):
     global dataset
     dataset = pd.read_csv(input_file_path)
@@ -32,7 +32,6 @@ def deduce_clusters(num_clusters):
     # fit_predict() method returns which data points
     # belong to which cluster
     y_kmeans = kmeans.fit_predict(clustering_cols_data)
-    return y_kmeans
 
 def visualize_clusters():
     X = clustering_cols_data.values
@@ -50,22 +49,23 @@ def visualize_clusters():
     plt.show()
 
 def print_inertia_metric():
-    print ("Interia is", kmeans.inertia_)
+    print ('Inertia is: {0:1.3g}'.format(kmeans.inertia_))
 
-def compute_and_plot_elbow (max_clusters = 7):
+def compute_and_plot_elbow (max_clusters = 6):
     # Finding out optimum number of clusters by
     # "Within Cluster Sum of Squares" (WCSS)
     wcss = []
     X = clustering_cols_data.values
-    for i in range(1, max_clusters):
+    for i in range(1, max_clusters+1):
         kmeans = KMeans(n_clusters=i, init='k-means++',
                         random_state=0)
         kmeans.fit(X)
 
         # Compute WCSS and append it to the list Inertia
         wcss.append(kmeans.inertia_)
+        print('#Clusters: ' + str(i) + ' -> Inertia: {0:1.3g}'.format(kmeans.inertia_))
 
-    plt.plot(range(1, 7), wcss)  # plotting Elbow method
+    plt.plot(range(1, max_clusters+1), wcss)  # plotting Elbow method
     plt.title('The Elbow Method')  # naming the title
     plt.xlabel('Number of clusters')  # labeling x axis
     plt.ylabel('WCSS / Inertia')  # labelling the y axis

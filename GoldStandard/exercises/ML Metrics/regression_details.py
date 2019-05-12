@@ -2,6 +2,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import math
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
@@ -45,7 +46,7 @@ def test_model():
 
 def compute_regression_metrics():
     # The mean squared error
-    print("Mean squared error: %.2f"
-          % mean_squared_error(Y_test, predicted))
+    print("Root Mean squared error: %.2f"
+          % math.sqrt(mean_squared_error(Y_test, predicted)))
     # Explained R-Square score: 1 is perfect prediction
     print('R Square score: %.2f' % r2_score(Y_test, predicted))

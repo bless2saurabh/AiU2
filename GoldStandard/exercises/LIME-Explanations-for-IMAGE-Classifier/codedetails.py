@@ -17,6 +17,7 @@ session, names, probabilities, processed_images, preds, lime_explanation = None,
 
 def load_pretrained_slim_model ():
     global session, names, probabilities, processed_images, slim_home_dir
+
     names = imagenet.create_readable_names_for_imagenet_labels()
     processed_images = tf.placeholder(tf.float32, shape=(None, 299, 299, 3))
     with slim.arg_scope(inception.inception_v3_arg_scope()):
@@ -27,6 +28,7 @@ def load_pretrained_slim_model ():
     init_fn = slim.assign_from_checkpoint_fn(os.path.join(checkpoints_dir, 'inception_v3.ckpt'),
                                              slim.get_model_variables('InceptionV3'))
     init_fn(session)
+
 
 def transform_image_for_inception(imageFilePath):
     image_size = inception.inception_v3.default_image_size
@@ -70,5 +72,3 @@ def show_lime_explanations_for_object (top):
     display_lime_image_exp(top, positive_only=True, num_features=5, hide_rest=True)
 
     display_lime_image_exp(top, positive_only=True, num_features=5, hide_rest=False)
-
-    display_lime_image_exp(top, positive_only=False, num_features=10, hide_rest=False)

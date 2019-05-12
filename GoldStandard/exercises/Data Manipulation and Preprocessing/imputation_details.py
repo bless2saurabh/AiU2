@@ -38,6 +38,11 @@ def fill_missing_cells (dataset, col_name, method, print_value=False):
 
     dataset[col_name] = dataset[col_name].fillna(cell_value_to_fill)
 
+def perform_data_imputation(dataset):
+    fill_missing_cells(dataset, "Item_Weight", method='mean')
+    fill_missing_cells(dataset, "Outlet_Size", method='mode')
+    fill_missing_cells(dataset, "Outlet_Establishment_Year", method='mode')
+
 def imputate_using_knn(dataset):
     knn_impu = KNNImputer(n_neighbors=3, weights="uniform")
     result = knn_impu.fit_transform(dataset)

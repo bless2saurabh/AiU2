@@ -80,7 +80,7 @@ def compute_and_print_f1_score(fixed=False):
     pred = rf[fixed].predict(test_vectors[fixed])
 
     # Compute F-score i.e., quality metric showing the accuracy level.
-    print("\tF1 score of the model= %.2f %%"
+    print("F1 score of the model= %.2f %%"
           %(100*sklearn.metrics.f1_score(newsgroups_test[fixed].target, pred, average='binary')))
 
 def print_prediction_for_test_sample (idx, fixed=False):
@@ -109,8 +109,8 @@ def find_lime_explanations_for(idx, fixed=False):
     # These weighted features are a linear model,
     # which approximates behaviour of the random forest classifier
     # in the vicinity of the test example.
-    print('LIME explanations for the sample: ')
-    exp.as_list()
     exp.as_pyplot_figure()
     plt.show()
+    print('LIME explanations for the sample: ')
+    print (exp.as_list())
 

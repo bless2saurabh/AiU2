@@ -7,16 +7,6 @@ from imputation_details import *
 import warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
-def load_input_data_from_file(input_file_path):
-    dataset = pd.read_csv(input_file_path)
-    print("dataset size: [", dataset.shape[0], 'rows,', dataset.shape[1], 'columns]')
-    return dataset
-
-def perform_data_imputation(dataset):
-    fill_missing_cells(dataset, "Item_Weight", method='mean')
-    fill_missing_cells(dataset, "Outlet_Size", method='mode')
-    fill_missing_cells(dataset, "Outlet_Establishment_Year", method='mode')
-
 def detect_outliers(dataset, col_name):
     col_data = dataset[col_name]
     col_index = dataset.columns.get_loc(col_name)

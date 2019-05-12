@@ -15,19 +15,23 @@ nones = lambda n: [None for _ in range(n)]
 data_frame, X_train, X_test, Y_train, Y_test, model, predictions, cM = nones(8)
 extracted_dataset = []
 target = []
-def load_input_data_from_file (input_file_path):
+def load_input_data_from_file (input_file_path, n_rows=5):
     global data_frame
     data_frame = pd.read_csv(input_file_path, header=0)
     print("dataset size: [",data_frame.shape[0],'rows,', data_frame.shape[1],'columns]')
-    return (data_frame.head(5))
+    return (data_frame.head(n_rows))
 
-def strip_target_column():
+def strip_target_column(n_rows=5):
     global extracted_dataset, target
     dataset = np.array(data_frame)
     # Sepratating out target column from rest of data-set columns
     for row in dataset:
         extracted_dataset.append(row[1:])
         target.append(row[0])
+    ex_data = pd.DataFrame(extracted_dataset, columns=['gre','gpa','rank'])
+    print("dataset size: [", ex_data.shape[0], 'rows,', ex_data.shape[1], 'columns]')
+
+    return ex_data.head(n_rows)
 
 def do_train_test_split(test_size=0.2):
     # Splitting independent data and targeted data as test and dataset
