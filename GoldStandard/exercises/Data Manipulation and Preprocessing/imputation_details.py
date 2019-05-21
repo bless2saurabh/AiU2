@@ -43,8 +43,8 @@ def perform_data_imputation(dataset):
     fill_missing_cells(dataset, "Outlet_Size", method='mode')
     fill_missing_cells(dataset, "Outlet_Establishment_Year", method='mode')
 
-def imputate_using_knn(dataset):
-    knn_impu = KNNImputer(n_neighbors=3, weights="uniform")
+def imputate_using_knn(dataset, k):
+    knn_impu = KNNImputer(n_neighbors=k, weights="uniform")
     result = knn_impu.fit_transform(dataset)
 
     result = pd.DataFrame(result)

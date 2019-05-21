@@ -1,0 +1,7 @@
+Sr_No,Country_Code,Cars,Country,Drives_Right
+1,US,809,United States,TRUE
+2,AUS,731,Australia,FALSE
+3,IN,100,India,FALSE
+4,JAP,588,Japan,FALSE
+5,RU,200,Russia,TRUE
+6,EG,45,Egypt,TRUE
