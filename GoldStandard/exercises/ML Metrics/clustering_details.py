@@ -8,7 +8,8 @@ import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 nones = lambda n: [None for _ in range(n)]
-dataset, clustering_cols_data, kmeans, y_kmeans = nones(4)
+dataset, clustering_cols, clustering_cols_data = nones(3)
+colors = ['red', 'blue', 'green', 'cyan', 'orange', 'pink', 'black']
 wcss_scale_down_factor = 100000000
 def load_input_data_from_file(input_file_path):
     global dataset
@@ -17,10 +18,11 @@ def load_input_data_from_file(input_file_path):
     print("dataset size: [", dataset.shape[0], 'rows,', dataset.shape[1], 'columns]')
     return dataset.head(5)
 
-def set_cols_used_for_clustering(col1, col2):
+def set_cols_used_for_clustering(cols):
     # Column Qty and Rate used for purpose of clustering
-    global clustering_cols_data
-    clustering_cols_data = dataset.loc[:, [col1, col2]]
+    global clustering_cols, clustering_cols_data
+    clustering_cols = cols
+    clustering_cols_data = dataset.loc[:, clustering_cols]
     print("[", clustering_cols_data.shape[0], ' rows]')
     return clustering_cols_data.head(5)
 
@@ -32,19 +34,19 @@ def deduce_clusters(num_clusters):
     # fit_predict() method returns which data points
     # belong to which cluster
     y_kmeans = kmeans.fit_predict(clustering_cols_data)
+    visualize_clusters (num_clusters, kmeans, y_kmeans);
 
-def visualize_clusters():
+def visualize_clusters(num_clusters, kmeans, y_kmeans):
     X = clustering_cols_data.values
-    plt.scatter(X[y_kmeans == 0, 0], X[y_kmeans == 0, 1],
-                s=100, c='red', label='Cluster 1')
-    plt.scatter(X[y_kmeans == 1, 0], X[y_kmeans == 1, 1],
-                s=100, c='blue', label='Cluster 2')
+    for i in range(num_clusters):
+        plt.scatter(X[y_kmeans == i, 0], X[y_kmeans == i, 1],
+                s=100, c=colors[i], label='Cluster '+str(i+1))
     plt.scatter(kmeans.cluster_centers_[:, 0],
                 kmeans.cluster_centers_[:, 1],
                 s=300, c='yellow', label='Centroids')
     plt.title('Clusters')
-    plt.xlabel('Quantity')
-    plt.ylabel('Rate')
+    plt.xlabel(clustering_cols[0])
+    plt.ylabel(clustering_cols[1])
     plt.legend()
     plt.show()
 

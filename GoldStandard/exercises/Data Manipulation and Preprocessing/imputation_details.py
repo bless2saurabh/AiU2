@@ -44,11 +44,12 @@ def perform_data_imputation(dataset):
     fill_missing_cells(dataset, "Outlet_Establishment_Year", method='mode')
 
 def imputate_using_knn(dataset, k):
+    cols = dataset.columns
     knn_impu = KNNImputer(n_neighbors=k, weights="uniform")
     result = knn_impu.fit_transform(dataset)
 
     result = pd.DataFrame(result)
 
-    result.columns = ["CRIM", "ZN", "INDUS", "CHAS", "INDUS", "RM", "AGE", "DIS", "RAD", "TAX", "PT", "B", "LSTAT", "MV"]
+    result.columns = cols
     return result
 
